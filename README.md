@@ -1,3 +1,19 @@
+# K1 Ultra Bluetooth controls
+
+This fork develops local Bluetooth settings for the **Keychron K1 Ultra 8K Knob
+ANSI**, USB `3434:1610`. Work lives on `codex/bluetooth-controls` and is based on
+Keychron's official `rtl8762g` source. This is experimental firmware; a successful
+build does not establish that it is safe to flash or that latency improves on a
+particular host.
+
+The prototype adds encrypted, bonded-host controls for debounce and Bluetooth
+connection timing, negotiated-timing readback, and a native macOS controller
+using Apple's CoreBluetooth framework. The stock timing profile is the default.
+It does not turn Bluetooth into the keyboard's 8 kHz proprietary radio mode.
+
+See [build, protocol, and hardware validation instructions](docs/local-bluetooth.md).
+The original upstream ZMK introduction follows.
+
 # Zephyr™ Mechanical Keyboard (ZMK) Firmware
 
 [![Discord](https://img.shields.io/discord/719497620560543766)](https://zmk.dev/community/discord/invite)

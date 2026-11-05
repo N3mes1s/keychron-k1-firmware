@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict>
+<key>CFBundleIdentifier</key><string>local.keychron.bluetooth-controls</string>
+<key>CFBundleName</key><string>Keychron Bluetooth Controls</string>
+<key>NSBluetoothAlwaysUsageDescription</key><string>Read and adjust your paired Keychron keyboard's local Bluetooth timing and debounce settings.</string>
+</dict></plist>

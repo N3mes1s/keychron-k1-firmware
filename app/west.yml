@@ -1,48 +1,110 @@
+# Dependency revisions are intentionally frozen. Update them explicitly.
 manifest:
-  remotes:
-    - name: keychron
-      url-base: https://github.com/Keychron
+  group-filter:
+  - -babblesim
+  - -optional
   projects:
-    - name: zephyr
-      remote: keychron
-      revision: rtl87x2g
-      clone-depth: 1
-      import:
-        name-blocklist:
-          - ci-tools
-          - hal_altera
-          - hal_cypress
-          - hal_infineon
-          - hal_microchip
-          - hal_nxp
-          - hal_openisa
-          - hal_silabs
-          - hal_xtensa
-          - hal_st
-          - hal_ti
-          - hal_ambiq
-          - hal_atmel
-          - hal_espressif
-          - hal_ethos_u
-          - hal_gigadevice
-          - hal_intel
-          - hal_nordic
-          - hal_nuvoton
-          - hal_quicklogic
-          - hal_renesas
-          - hal_rpi_pico
-          - hal_telink
-          - hal_wurthelektronik
-          - hal_stm32
-          - cmsis-dsp
-          - cmsis-nn
-          - fatfs
-          - loramac-node
-          - mcuboot
-          - mcumgr
-          - net-tools
-          - openthread
-          - edtt
-          - trusted-firmware-m
+  - name: zephyr
+    url: https://github.com/N3mes1s/keychron-zephyr
+    revision: 2c11634850f7d6b04e55a253d4506a6e7c8bd673
+    clone-depth: 1
+    west-commands: scripts/west-commands.yml
+  - name: acpica
+    url: https://github.com/zephyrproject-rtos/acpica
+    revision: 0333c2af13179f9b33d495cf7cb9a509f751cbb1
+    path: modules/lib/acpica
+  - name: canopennode
+    url: https://github.com/zephyrproject-rtos/canopennode
+    revision: dec12fa3f0d790cafa8414a4c2930ea71ab72ffd
+    path: modules/lib/canopennode
+  - name: cmsis
+    url: https://github.com/zephyrproject-rtos/cmsis
+    revision: 5a00331455dd74e31e80efa383a489faea0590e3
+    path: modules/hal/cmsis
+    groups:
+    - hal
+  - name: hal_realtek
+    url: https://github.com/N3mes1s/keychron-hal-realtek
+    revision: 3c8e0bf787d80bc98c0fe4041f660ee1bf091206
+    path: modules/hal/realtek
+    groups:
+    - hal
+  - name: libmetal
+    url: https://github.com/zephyrproject-rtos/libmetal
+    revision: b91611a6f47dd29fb24c46e5621e797557f80ec6
+    path: modules/hal/libmetal
+    groups:
+    - hal
+  - name: liblc3
+    url: https://github.com/zephyrproject-rtos/liblc3
+    revision: 448f3de31f49a838988a162ef1e23a89ddf2d2ed
+    path: modules/lib/liblc3
+  - name: littlefs
+    url: https://github.com/zephyrproject-rtos/littlefs
+    revision: ca583fd297ceb48bced3c2548600dc615d67af24
+    path: modules/fs/littlefs
+    groups:
+    - fs
+  - name: lvgl
+    url: https://github.com/zephyrproject-rtos/lvgl
+    revision: 8a6a2d1d29d17d1e4bdc94c243c146a39d635fdd
+    path: modules/lib/gui/lvgl
+  - name: mbedtls
+    url: https://github.com/zephyrproject-rtos/mbedtls
+    revision: c38dc78d9a8dcbe43b898cc1171ab33ba3e6fc26
+    path: modules/crypto/mbedtls
+    groups:
+    - crypto
+  - name: mipi-sys-t
+    url: https://github.com/zephyrproject-rtos/mipi-sys-t
+    revision: a819419603a2dfcb47f7f39092e1bc112e45d1ef
+    path: modules/debug/mipi-sys-t
+    groups:
+    - debug
+  - name: nrf_hw_models
+    url: https://github.com/zephyrproject-rtos/nrf_hw_models
+    revision: f4595802d32d103718bf50b3d390b7a450895843
+    path: modules/bsim_hw_models/nrf_hw_models
+  - name: open-amp
+    url: https://github.com/zephyrproject-rtos/open-amp
+    revision: 42b7c577714b8f22ce82a901e19c1814af4609a8
+    path: modules/lib/open-amp
+  - name: percepio
+    url: https://github.com/zephyrproject-rtos/percepio
+    revision: a3728efccc47dd372f40e6313589ca4c5cc7d5e9
+    path: modules/debug/percepio
+    groups:
+    - debug
+  - name: picolibc
+    url: https://github.com/zephyrproject-rtos/picolibc
+    revision: d07c38ff051386f8e09a143ea0a6c1d6d66dd1d8
+    path: modules/lib/picolibc
+  - name: segger
+    url: https://github.com/zephyrproject-rtos/segger
+    revision: 9d0191285956cef43daf411edc2f1a7788346def
+    path: modules/debug/segger
+    groups:
+    - debug
+  - name: tinycrypt
+    url: https://github.com/zephyrproject-rtos/tinycrypt
+    revision: 3e9a49d2672ec01435ffbf0d788db6d95ef28de0
+    path: modules/crypto/tinycrypt
+    groups:
+    - crypto
+  - name: trusted-firmware-a
+    url: https://github.com/zephyrproject-rtos/trusted-firmware-a
+    revision: 421dc050278287839f5c70019bd6aec617f2bbdb
+    path: modules/tee/tf-a/trusted-firmware-a
+    groups:
+    - tee
+  - name: uoscore-uedhoc
+    url: https://github.com/zephyrproject-rtos/uoscore-uedhoc
+    revision: 5fe2cb613bd7e4590bd1b00c2adf181ac0229379
+    path: modules/lib/uoscore-uedhoc
+  - name: zcbor
+    url: https://github.com/zephyrproject-rtos/zcbor
+    revision: 67fd8bb88d3136738661fa8bb5f9989103f4599e
+    path: modules/lib/zcbor
   self:
+    path: app
     west-commands: scripts/west-commands.yml

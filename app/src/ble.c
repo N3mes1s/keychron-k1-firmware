@@ -39,6 +39,9 @@
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #include <zmk/ble.h>
+#if IS_ENABLED(CONFIG_ZMK_BLE_TUNING)
+#include <zmk/ble_tuning.h>
+#endif
 #include <zmk/keys.h>
 #include <zmk/split/bluetooth/uuid.h>
 #include <zmk/event_manager.h>
@@ -944,6 +947,13 @@ int zmk_ble_init(void) {
     settings_load_subtree("ble");
     settings_load_subtree("bt");
 
+#if IS_ENABLED(CONFIG_ZMK_BLE_TUNING)
+    err = zmk_ble_tuning_init();
+    if (err) {
+        LOG_WRN("Bluetooth tuning settings unavailable; using stock timing (%d)", err);
+    }
+#endif
+
 #endif
     load_identities();
 
@@ -1444,6 +1454,10 @@ int ble_is_pairing(void) {
 }
 
 uint8_t get_os_type(void);
+void zmk_ble_request_parameter_update(void) {
+    k_work_reschedule(&update_conn_param_work, K_MSEC(100));
+}
+
 void update_conn_param_worker(struct k_work *work) {
     int rc = 0;
     struct bt_le_conn_param *active_param = BT_LE_CONN_PARAM(6, 6, 30, 400);
@@ -1452,6 +1466,9 @@ void update_conn_param_worker(struct k_work *work) {
         active_param->interval_max = 12;
         active_param->interval_min = 12;
     }
+#if IS_ENABLED(CONFIG_ZMK_BLE_TUNING)
+    zmk_ble_tuning_parameters(active_param, get_os_type() != 0);
+#endif
     struct bt_conn *conn;
     bt_addr_le_t *addr = zmk_ble_active_profile_addr();
 
@@ -1466,6 +1483,9 @@ void update_conn_param_worker(struct k_work *work) {
         {
             LOG_ERR("change to inteval:%d", active_param->interval_max);
             rc = bt_conn_le_param_update(conn, active_param);
+#if IS_ENABLED(CONFIG_ZMK_BLE_TUNING)
+            zmk_ble_tuning_request_result(rc);
+#endif
             LOG_ERR("rc:%d", rc);
         }
         bt_conn_unref(conn);

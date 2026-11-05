@@ -152,6 +152,7 @@ if ((NOT CONFIG_ZMK_SPLIT) OR CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
     target_sources(app PRIVATE src/behaviors/behavior_bt.c)
     target_sources(app PRIVATE src/ble.c)
     target_sources(app PRIVATE src/hog.c)
+    target_sources_ifdef(CONFIG_ZMK_BLE_TUNING app PRIVATE src/ble_tuning.c)
   endif()
 endif()
 
@@ -248,25 +249,33 @@ zephyr_cc_option(-Wfatal-errors)
 # The header prepending tool is a available for Windows, Linux x86_64,
 # and macOS ARM64.
 # ---------------------------------------------------------------------------
-if(WIN32)
+if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Windows")
   set(_PREPEND_HEADER tools/prepend_header/windows-x86_64/prepend_header.exe)
-elseif(APPLE)
-  if(CMAKE_SYSTEM_PROCESSOR MATCHES "arm64|aarch64")
+elseif(CMAKE_HOST_SYSTEM_NAME STREQUAL "Darwin")
+  if(CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "arm64|aarch64")
     set(_PREPEND_HEADER tools/prepend_header/darwin-arm64/prepend_header)
   else()
     message(FATAL_ERROR "Intel Mac is not supported. Please use an Apple Silicon Mac.")
   endif()
 else()
-  if(CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64|arm64")
+  if(CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "aarch64|arm64")
     message(FATAL_ERROR "Linux ARM is not supported.")
   else()
     set(_PREPEND_HEADER tools/prepend_header/linux-x86_64/prepend_header)
   endif()
 endif()
 
+get_filename_component(_PREPEND_HEADER_NAME "${_PREPEND_HEADER}" NAME)
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/${_PREPEND_HEADER}"
+     "${CMAKE_CURRENT_BINARY_DIR}/tools/${_PREPEND_HEADER_NAME}" COPYONLY
+     FILE_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+set(_PREPEND_HEADER "${CMAKE_CURRENT_BINARY_DIR}/tools/${_PREPEND_HEADER_NAME}")
+set(_OTA_IMAGE "${CMAKE_CURRENT_BINARY_DIR}/zephyr/zmk-ota.bin")
+
 add_custom_target(rtk_post_build ALL
-  COMMAND ${_PREPEND_HEADER} -t app_code -p build/zephyr/zmk.bin -m 1 -c sha256 -b 15
-  COMMAND ${CMAKE_COMMAND} -E rm -f build/zephyr/zmk_MP.bin
+  COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/zephyr/zmk.bin ${_OTA_IMAGE}
+  COMMAND ${_PREPEND_HEADER} -t app_code -p ${_OTA_IMAGE} -m 1 -c sha256 -b 15
+  COMMAND ${CMAKE_COMMAND} -E rm -f ${CMAKE_CURRENT_BINARY_DIR}/zephyr/zmk-ota_MP.bin
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
 add_dependencies(rtk_post_build zephyr_final)
