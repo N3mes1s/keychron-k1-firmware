@@ -157,7 +157,24 @@ menuconfig ZMK_BLE
     imply SETTINGS if !ARCH_POSIX
     imply ZMK_BATTERY_REPORTING if !ARCH_POSIX
 
+config RTK_DFU
+    bool "Realtek USB firmware update support"
+    depends on ZMK_USB && FLASH
+    default n
+    help
+      Enables the existing Realtek USB DFU sources selected by the K1 Ultra
+      shield. Preserve this recovery path when adding Bluetooth controls.
+
 if ZMK_BLE
+
+config ZMK_BLE_TUNING
+    bool "Encrypted Bluetooth debounce and connection timing controls"
+    depends on ZMK_LAUNCHER && LAUNCHER_USER_SET_DEBOUNCE && SETTINGS
+    default n
+    help
+      Exposes a small GATT service to the encrypted, bonded, active host.
+      Supports debounce, timing profiles, bounded custom parameters and actual
+      negotiated timing readback. This does not promise a higher HID report rate.
 
 config ZMK_BLE_EXPERIMENTAL_CONN
     bool "Experimental BLE connection changes"

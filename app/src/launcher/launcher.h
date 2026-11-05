@@ -363,6 +363,8 @@ void set_zmk_keymap(uint8_t layer, uint8_t row, uint8_t column, uint16_t keycode
 void set_zmk_encoders(uint8_t layer, bool clockwise, uint16_t keycode);
 void generate_launcher_keymaps(void);
 void launcher_save_debounce(void);
+int launcher_get_debounce(uint8_t *press_ms, uint8_t *release_ms);
+int launcher_set_debounce(uint8_t press_ms, uint8_t release_ms);
 void launcher_set_path(uint8_t path);
 
 static inline uint8_t eeprom_read_byte(uint16_t addr) { return launcher_device.raw[addr]; }

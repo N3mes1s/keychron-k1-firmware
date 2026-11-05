@@ -31,6 +31,7 @@
 #include "../rgb/rgb_matrix.h"
 #endif
 #include <stdlib.h>
+#include <errno.h>
 #include <stdio.h>
 #include <zmk/activity.h>
 
@@ -200,6 +201,23 @@ SYS_INIT(launcher_init, APPLICATION, CONFIG_APPLICATION_LAUNCHER_INIT_PRIORITY);
 _launcher_device launcher_device;
 #if CONFIG_LAUNCHER_USER_SET_DEBOUNCE
 static struct user_debounce debounce;
+
+int launcher_get_debounce(uint8_t *press_ms, uint8_t *release_ms) {
+    *press_ms = debounce.debounce_press_ms;
+    *release_ms = debounce.debounce_release_ms;
+    return 0;
+}
+
+int launcher_set_debounce(uint8_t press_ms, uint8_t release_ms) {
+    if (press_ms > 50 || release_ms == 0 || release_ms > 50) {
+        return -EINVAL;
+    }
+    debounce.debounce_press_ms = press_ms;
+    debounce.debounce_release_ms = release_ms;
+    user_set_debounce(press_ms, release_ms);
+    launcher_save_debounce();
+    return 0;
+}
 #endif
 #if 1
 struct direct_immediate_value {
@@ -2069,16 +2087,12 @@ void kc_user_cmd(uint8_t *command_data) {
         break;
     case kc_user_cmd_set_debounce:
 
-        if (command_data[1] > 50 || (command_data[2] > 50 || command_data[2] == 0)) {
+        if (launcher_set_debounce(command_data[1], command_data[2]) != 0) {
             command_data[1] = 1;
             command_data[2] = 0;
         } else {
-            debounce.debounce_press_ms = command_data[1];
-            debounce.debounce_release_ms = command_data[2];
-            user_set_debounce(debounce.debounce_press_ms, debounce.debounce_release_ms);
             LOG_ERR("kc set debounce[%d,%d]", debounce.debounce_press_ms,
                     debounce.debounce_release_ms);
-            launcher_save_debounce();
             command_data[1] = 0;
             command_data[2] = 0;
         }
